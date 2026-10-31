@@ -2,6 +2,7 @@
 
 Hackathon: Middle Powers, AI safety hackathon (Mangrove). Track C, Diplomacy.
 Author: Eyitayo Alimi
+Report written by : 
 
 ## What it is
 
@@ -38,9 +39,6 @@ Coalitions of 3 or 4 are ranked in order by: chokepoint cells held, layers where
 - Scores are judgments under written rules.
 - Ten countries is a sample. Leverage held is not willingness to use it.
 
-## Cells still to verify
-
-Singapore data-centre hub-role judgment (capacity itself is settled at 1,068 MW), Brazil cable counts, India Algorithms row, Nigeria power figures, Stanford AI Index originals.
 
 ## Future work
 
