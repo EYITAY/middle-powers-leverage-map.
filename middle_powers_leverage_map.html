@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Middle Powers Leverage Map</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#0f1316;--panel:#171d21;--line:#27313a;--fg:#e6e9ea;--mute:#8d9aa3;--accent:#e0a33a;--s0:#1b2227;--s1:#2c4a57;--s2:#3f8a8f;--s3:#e0a33a;--warn:#d9694a;--ok:#6fb58a;
+--disp:'Fraunces',Georgia,serif;--body:'IBM Plex Sans',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 var(--body);margin:0;padding-block:28px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1040px;margin:0 auto}
+h1{font:700 clamp(28px,5vw,44px)/1.1 var(--disp);margin:0 0 10px;text-wrap:balance}
+h2{font:500 22px/1.2 var(--disp);margin:44px 0 8px}
+.sub{color:var(--mute);max-width:66ch;margin:0 0 6px}
+.tag{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.warnbox{border:1px solid var(--line);background:var(--panel);padding:12px 14px;margin:18px 0;font-size:13.5px;color:var(--mute);max-width:80ch}
+.warnbox b{color:var(--fg)}
+.scroll{overflow-x:auto}
+table.grid{border-collapse:separate;border-spacing:3px;min-width:720px;width:100%}
+.grid th{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute);text-align:center;padding:4px 2px}
+.grid th.r{text-align:left;font:500 14px var(--body);text-transform:none;letter-spacing:0;color:var(--fg);white-space:nowrap;padding-right:10px}
+.cell{all:unset;box-sizing:border-box;display:block;width:100%;height:46px;text-align:center;line-height:46px;font:500 15px var(--mono);cursor:pointer;position:relative}
+.cell:focus-visible{outline:2px solid var(--fg);outline-offset:1px}
+.cell.sel{outline:2px solid var(--fg)}
+.s0{background:var(--s0);color:var(--mute)}.s1{background:var(--s1)}.s2{background:var(--s2);color:#071012}.s3{background:var(--s3);color:#1a1100}
+.cell.blank{background:repeating-linear-gradient(45deg,var(--s0),var(--s0) 5px,#232c33 5px,#232c33 10px);color:var(--mute)}
+.cell .f{position:absolute;right:3px;top:0;font-size:9px;line-height:14px;color:inherit;opacity:.85}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font:12px var(--mono);color:var(--mute);margin:10px 0}
+.legend i{display:inline-block;width:14px;height:14px;vertical-align:-3px;margin-right:5px}
+.drawer{background:var(--panel);border:1px solid var(--line);padding:16px 18px;margin-top:12px;min-height:120px}
+.drawer h3{margin:0 0 4px;font:500 18px var(--disp)}
+.drawer dl{display:grid;grid-template-columns:110px 1fr;gap:6px 14px;margin:12px 0 0;font-size:14px}
+.drawer dt{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute);padding-top:3px}
+.drawer dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.drawer a{color:var(--accent)}
+.pill{display:inline-block;font:500 11px var(--mono);padding:1px 8px;border:1px solid var(--line);margin-right:6px}
+.pill.v{color:var(--ok);border-color:var(--ok)}.pill.s{color:var(--accent);border-color:var(--accent)}.pill.u{color:var(--warn);border-color:var(--warn)}
+.ctl{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:14px 0}
+.ctl label{display:flex;gap:6px;align-items:center;font-size:14px;cursor:pointer}
+.seg{display:inline-flex;border:1px solid var(--line)}
+.seg button{all:unset;padding:6px 16px;font:500 13px var(--mono);cursor:pointer;color:var(--mute)}
+.seg button[aria-pressed=true]{background:var(--accent);color:#1a1100}
+.seg button:focus-visible{outline:2px solid var(--fg)}
+.cands{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.cands label{border:1px solid var(--line);padding:4px 10px;font-size:13px}
+.cands label.on{border-color:var(--accent);color:var(--accent)}
+.cands input{margin-right:6px}
+table.rank{width:100%;border-collapse:collapse;font-size:14px;min-width:620px}
+.rank th{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute);text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.rank td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+.rank td.n{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.rank tr.top td{background:#1d2418}
+.mini{display:flex;gap:2px}.mini span{width:18px;height:18px;font:500 10px/18px var(--mono);text-align:center}
+.note{font-size:14px;color:var(--mute);max-width:72ch}
+.note b{color:var(--fg)}
+ul.lim{max-width:74ch;padding-left:20px}ul.lim li{margin:6px 0}
+code{font-family:var(--mono);font-size:12.5px;background:var(--panel);padding:1px 5px}
+.res{border-left:3px solid var(--accent);padding:6px 14px;margin:14px 0;background:var(--panel);max-width:80ch}
+
+.viz{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:22px;margin:16px 0;align-items:center}
+@media(max-width:700px){.viz{grid-template-columns:1fr}}
+.ring{width:100%;height:auto;max-width:360px;background:var(--panel);border:1px solid var(--line)}
+.ring text{font:11px var(--mono);fill:var(--mute)}
+.ring .nd circle{fill:var(--s0);stroke:var(--line);stroke-width:1.5;transition:fill .5s,stroke .5s,r .5s}
+.ring .nd.on circle{fill:var(--accent);stroke:var(--accent);r:11}
+.ring .nd.on text{fill:var(--fg)}
+.ring line{stroke:var(--accent);stroke-width:1.5;opacity:.75}
+.bars{display:grid;gap:7px}
+.br{display:grid;grid-template-columns:104px 1fr;gap:10px;align-items:center;font-size:13px}
+.br span.l{font:500 11px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--mute)}
+.trk{background:var(--s0);height:22px;position:relative}
+.fill{height:100%;width:0;transition:width .7s cubic-bezier(.2,.7,.2,1);display:flex;align-items:center;padding-left:8px;font:500 11px var(--mono);white-space:nowrap;overflow:hidden}
+.fill.f0{background:var(--s0)}.fill.f1{background:var(--s1)}.fill.f2{background:var(--s2);color:#071012}.fill.f3{background:var(--s3);color:#1a1100}
+.rank tr.pick{cursor:pointer}.rank tr.pick:hover td{background:#1b2429}.rank tr.pick:focus-visible{outline:2px solid var(--fg)}
+.rank tr.sh td{box-shadow:inset 0 0 0 9999px rgba(224,163,58,.10)}
+.play{all:unset;cursor:pointer;padding:6px 14px;border:1px solid var(--accent);color:var(--accent);font:500 13px var(--mono)}
+.play:focus-visible{outline:2px solid var(--fg)}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(224,163,58,.7)}100%{box-shadow:0 0 0 14px rgba(224,163,58,0)}}
+.cell{animation:rise .5s both;animation-delay:calc(var(--i,0)*18ms)}
+.cell.s3{animation:rise .5s both,ping 1.4s .9s 2;animation-delay:calc(var(--i,0)*18ms),.9s}
+@media(prefers-reduced-motion:reduce){.cell,.cell.s3{animation:none}.fill{transition:none}}
+.how{max-width:74ch;padding-left:20px}.how li{margin:6px 0}</style>
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments)};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+<div class="wrap">
+<div class="tag">Middle Powers hackathon · Track C, Diplomacy</div>
+<h1>Middle Powers Leverage Map</h1>
+<p class="sub">Which of ten middle powers hold something frontier AI developers cannot easily replace, and which small groups of them hold enough of it to set a condition together. Every cell has a source link, a confidence flag and a reason.</p>
+<div class="warnbox"><b>Read before using.</b> This is a first pass built in about a day from public sources. Only two cells reach the top score, and both are chips. All Algorithms cells score 1. One cell has no score because no source was found (hatched). Some figures come from secondary summaries and are marked <span class="pill s">Single source</span> or <span class="pill u">Unverified</span>. Treat the coalition ranking as a way to ask questions, not as a finding.</div>
+
+<h2>How this works</h2>
+<ol class="how">
+<li><b>Read the grid.</b> Each row is a country and each column is a part of the AI supply chain. The number is how hard that country's contribution is to replace, from 0 to 3.</li>
+<li><b>Check the evidence.</b> Select any cell to see what the country holds, why it got that score, how well it is sourced, and the link.</li>
+<li><b>Look for groups.</b> The coalition finder ranks groups of 3 or 4 countries by what they hold together. Select a row, or press Play tour, to see the group's links and which member holds each layer.</li>
+<li><b>Test the result.</b> Tick the box to score unverified cells as 1 and see whether the top group changes.</li>
+</ol>
+<h2>The map</h2>
+<p class="sub">Seven layers. Score 0 to 3 for how hard the lever is to replace. Select a cell for the evidence.</p>
+<div class="legend"><span><i style="background:var(--s0)"></i>0 none</span><span><i style="background:var(--s1)"></i>1 minor or replaceable</span><span><i style="background:var(--s2)"></i>2 hard to replace</span><span><i style="background:var(--s3)"></i>3 chokepoint</span><span><i style="background:repeating-linear-gradient(45deg,var(--s0),var(--s0) 4px,#232c33 4px,#232c33 8px)"></i>no score, unverified</span><span>• marks a non-verified source</span></div>
+<div class="scroll"><table class="grid" id="grid"></table></div>
+<div class="drawer" id="drawer" aria-live="polite"></div>
+
+<h2>Coalition finder</h2>
+<p class="sub">Pick the countries that might act together, choose a group size, and see which groups cover the most layers. Coverage of a layer is the highest score any member holds in it.</p>
+<div class="ctl"><div class="seg" role="group" aria-label="Group size"><button id="g3" aria-pressed="true">Groups of 3</button><button id="g4" aria-pressed="false">Groups of 4</button></div>
+<label><input type="checkbox" id="sens"> Count unverified and blank cells as 1</label><button class="play" id="play" aria-pressed="false">Play tour</button></div>
+<div class="cands" id="cands"></div>
+<div class="res" id="summary"></div>
+<div class="viz"><svg class="ring" id="ring" viewBox="-50 0 460 360" role="img" aria-label="Countries in the selected group"></svg><div><div class="tag" id="vizt"></div><div class="bars" id="bars"></div></div></div>
+<p class="note">Select a row to show that group. Each bar is the highest score any member holds in that layer.</p>
+<div class="scroll"><table class="rank" id="rank"></table></div>
+<p class="note"><b>Ranking order.</b> 1) number of chokepoint (3) cells held, 2) number of layers where the group reaches 2 or more, 3) total coverage, 4) number of cells scoring 2 or more. Ties at the top are shown, not hidden.</p>
+
+<h2>What this does and does not show</h2>
+<ul class="lim" id="lims"></ul>
+<h2>Sources</h2>
+<p class="note">Each cell links its own source. Calibration notes record seven score changes made after the first pass so that similar evidence got similar scores. The rubric, rules and change log are in the companion doc.</p>
+</div>
+<script>
+(async function(){
+function parseCSV(s){const rows=[];let r=[],f='',q=false;for(let i=0;i<s.length;i++){const c=s[i];if(q){if(c=='"'){if(s[i+1]=='"'){f+='"';i++}else q=false}else f+=c}else if(c=='"')q=true;else if(c==','){r.push(f);f=''}else if(c=='\n'){r.push(f);rows.push(r);r=[];f=''}else if(c!='\r')f+=c}if(f||r.length){r.push(f);rows.push(r)}return rows}
+const rows=parseCSV(await (await fetch('leverage_master_calibrated.csv')).text());const H=rows.shift();
+const DATA=rows.filter(r=>r.length>=9).map(r=>{const o={};H.forEach((h,i)=>o[h]=r[i]||'');return{c:o.Country,l:o.Layer,lever:o.Lever,s:o.Score===''?null:+o.Score,conf:o.Confidence,cond:o.Conditionable,url:o['Source URL'],date:o['Source date'],reason:o.Reason,cal:o.Calibration}});
+
+const LAYERS=['Energy','Chips','Infrastructure','Data centres','Algorithms','Talent','Consumption'];
+const COUNTRIES=[...new Set(DATA.map(d=>d.c))];
+const idx={};DATA.forEach(d=>idx[d.c+'|'+d.l]=d);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function isUnv(d){return d.s===null||d.conf==='Unverified'}
+function sc(d,sens){return d.s===null?(sens?1:0):(sens&&d.conf==='Unverified'&&d.s<1?1:d.s)}
+// grid
+let h='<tr><th></th>'+LAYERS.map(l=>'<th>'+l+'</th>').join('')+'</tr>';
+COUNTRIES.forEach(c=>{h+='<tr><th class="r">'+esc(c)+'</th>'+LAYERS.map(l=>{const d=idx[c+'|'+l];const b=d.s===null;
+return '<td><button style="--i:'+(COUNTRIES.indexOf(c)*7+LAYERS.indexOf(l))+'" class="cell '+(b?'blank':'s'+d.s)+'" data-k="'+esc(c+'|'+l)+'" aria-label="'+esc(c+' '+l+' '+(b?'no score':'score '+d.s))+'">'+(b?'?':d.s)+(d.conf!=='Verified'?'<span class="f">•</span>':'')+'</button></td>'}).join('')+'</tr>'});
+$('grid').innerHTML=h;
+function show(k){document.querySelectorAll('.cell').forEach(b=>b.classList.toggle('sel',b.dataset.k===k));
+const d=idx[k];const cl=d.conf==='Verified'?'v':d.conf==='Single source'?'s':'u';
+$('drawer').innerHTML='<h3>'+esc(d.c)+' · '+d.l+'</h3><div><span class="pill '+cl+'">'+esc(d.conf)+'</span><span class="pill">Score '+(d.s===null?'none':d.s)+'</span>'+(d.cond?'<span class="pill">Conditionable: '+esc(d.cond)+'</span>':'')+'</div><dl><dt>Lever</dt><dd>'+esc(d.lever)+'</dd><dt>Reason</dt><dd>'+esc(d.reason)+'</dd>'+(d.cal?'<dt>Calibration</dt><dd>'+esc(d.cal)+'</dd>':'')+'<dt>Source</dt><dd>'+(d.url?'<a href="'+esc(d.url)+'" target="_blank" rel="noopener">'+esc(d.url)+'</a>':'none found')+(d.date?' · '+esc(d.date):'')+'</dd></dl>'}
+$('grid').addEventListener('click',e=>{const b=e.target.closest('.cell');if(b)show(b.dataset.k)});
+$('drawer').innerHTML='<h3>Select a cell</h3><p class="sub">Each cell shows the lever, the reason for its score, how well it is sourced and the link.</p>';
+
+let shown=null,tourT=null;
+const RING=COUNTRIES.map((c,i)=>{const a=-Math.PI/2+i*2*Math.PI/COUNTRIES.length;return{c,x:180+125*Math.cos(a),y:180+125*Math.sin(a),a}});
+function drawViz(g,sens){shown=g;
+ let s='';const mem=RING.filter(n=>g.includes(n.c));
+ const L=[];for(let i=0;i<mem.length;i++)for(let j=i+1;j<mem.length;j++)L.push([mem[i],mem[j]]);
+ L.forEach(p=>{const len=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);s+='<line x1="'+p[0].x+'" y1="'+p[0].y+'" x2="'+p[1].x+'" y2="'+p[1].y+'" stroke-dasharray="'+len+'" stroke-dashoffset="'+len+'" class="ln"/>'});
+ RING.forEach(n=>{const on=g.includes(n.c);const tx=180+158*Math.cos(n.a),ty=180+158*Math.sin(n.a);const an=Math.cos(n.a)>.3?'start':Math.cos(n.a)<-.3?'end':'middle';
+  s+='<g class="nd'+(on?' on':'')+'"><circle cx="'+n.x+'" cy="'+n.y+'" r="7"/><text x="'+(180+(125+24)*Math.cos(n.a))+'" y="'+(180+(125+24)*Math.sin(n.a)+4)+'" text-anchor="'+an+'">'+esc(n.c.replace('South ','S. '))+'</text></g>'});
+ $('ring').innerHTML=s;
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{document.querySelectorAll('.ln').forEach((l,i)=>{l.style.transition='stroke-dashoffset .9s ease '+(i*0.12)+'s';l.style.strokeDashoffset=0})}));
+ const e=evalG(g,sens);$('vizt').textContent=g.join(' + ');
+ $('bars').innerHTML=LAYERS.map((l,i)=>{const m=e.best[i];const wl=g.filter(c=>sc(idx[c+'|'+l],sens)===m);const who=wl.length>2?wl.length+' countries':wl.join(', ');return '<div class="br"><span class="l">'+l+'</span><div class="trk"><div class="fill f'+m+'" data-w="'+(m/3*100)+'">'+(m?m+' · '+esc(who):'0')+'</div></div></div>'}).join('');
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{document.querySelectorAll('.fill').forEach((f,i)=>{f.style.transitionDelay=(i*70)+'ms';f.style.width=Math.max(+f.dataset.w,m0(f))+'%'})}));
+ document.querySelectorAll('#rank tr.pick').forEach(r=>r.classList.toggle('sh',r.dataset.g===g.join('|')));
+}
+function m0(f){return f.dataset.w==='0'?3:0}
+// finder
+let size=3;const chosen=new Set(COUNTRIES);
+$('cands').innerHTML=COUNTRIES.map(c=>'<label class="on"><input type="checkbox" checked data-c="'+esc(c)+'">'+esc(c)+'</label>').join('');
+$('cands').addEventListener('change',e=>{const i=e.target;if(!i.dataset.c)return;i.checked?chosen.add(i.dataset.c):chosen.delete(i.dataset.c);i.parentNode.classList.toggle('on',i.checked);run()});
+function combos(a,k){const out=[];(function r(s,cur){if(cur.length===k){out.push(cur.slice());return}for(let i=s;i<a.length;i++){cur.push(a[i]);r(i+1,cur);cur.pop()}})(0,[]);return out}
+function evalG(g,sens){let ch=0,l2=0,cov=0,st=0;const best=LAYERS.map(l=>{let m=0;g.forEach(c=>{const v=sc(idx[c+'|'+l],sens);if(v>m)m=v;if(v>=2)st++;});return m});
+best.forEach(m=>{cov+=m;if(m>=2)l2++});g.forEach(c=>LAYERS.forEach(l=>{if(sc(idx[c+'|'+l],sens)===3)ch++}));return{g,ch,l2,cov,st,best}}
+const cmp=(a,b)=>b.ch-a.ch||b.l2-a.l2||b.cov-a.cov||b.st-a.st;
+const key=r=>[r.ch,r.l2,r.cov,r.st].join();
+function ranked(sens){return combos([...chosen],size).map(g=>evalG(g,sens)).sort(cmp)}
+function run(){const sens=$('sens').checked;const R=ranked(sens);
+if(!R.length){$('summary').textContent='Choose at least '+size+' countries.';$('rank').innerHTML='';return}
+const tied=R.filter(r=>key(r)===key(R[0]));
+const base=ranked(false),alt=ranked(true);
+const same=base.length&&alt.length&&key(base[0])===key(alt[0])&&base[0].g.join()===alt[0].g.join();
+$('summary').innerHTML='<b>Top group: '+R[0].g.join(', ')+'</b><br>'+R[0].ch+' chokepoints, '+R[0].l2+' of 7 layers at 2 or more, coverage '+R[0].cov+' of 21. '+(tied.length>1?tied.length+' groups tie at the top.':'No other group ties at the top.')+'<br><span style="color:var(--mute);font-size:13px">Stability test: with unverified and blank cells scored 0 the top is <b>'+base[0].g.join(', ')+'</b>; scored 1 it is <b>'+alt[0].g.join(', ')+'</b>. '+(same?'The top group does not change.':'The top group changes, so treat this ranking as fragile.')+'</span>';
+const rows=R.slice(0,12);
+$('rank').innerHTML='<tr><th>#</th><th>Group</th><th>Layers (E C I D A T Cn)</th><th>Chokepoints</th><th>Layers ≥2</th><th>Coverage</th><th>Cells ≥2</th></tr>'+rows.map((r,i)=>'<tr tabindex="0" data-g="'+r.g.join('|')+'" class="pick '+(key(r)===key(R[0])?'top':'')+'"><td class="n">'+(i+1)+'</td><td>'+r.g.join(', ')+'</td><td><div class="mini">'+r.best.map(m=>'<span class="s'+m+'">'+m+'</span>').join('')+'</div></td><td class="n">'+r.ch+'</td><td class="n">'+r.l2+'</td><td class="n">'+r.cov+'</td><td class="n">'+r.st+'</td></tr>').join('');
+ if(!shown||!R.some(r=>r.g.join('|')===shown.join('|')))drawViz(R[0].g,sens);else drawViz(shown,sens)}
+function pickRow(tr){if(!tr)return;stopTour();drawViz(tr.dataset.g.split('|'),$('sens').checked)}
+$('rank').addEventListener('click',e=>pickRow(e.target.closest('tr.pick')));
+$('rank').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pickRow(e.target.closest('tr.pick'))}});
+function stopTour(){if(tourT){clearInterval(tourT);tourT=null}$('play').setAttribute('aria-pressed','false');$('play').textContent='Play tour'}
+$('play').onclick=()=>{if(tourT){stopTour();return}const R=ranked($('sens').checked).slice(0,6);if(!R.length)return;let i=0;$('play').setAttribute('aria-pressed','true');$('play').textContent='Stop tour';drawViz(R[0].g,$('sens').checked);tourT=setInterval(()=>{i=(i+1)%R.length;drawViz(R[i].g,$('sens').checked)},3200)};
+$('g3').onclick=()=>{stopTour();shown=null;size=3;$('g3').setAttribute('aria-pressed',true);$('g4').setAttribute('aria-pressed',false);run()};
+$('g4').onclick=()=>{stopTour();shown=null;size=4;$('g4').setAttribute('aria-pressed',true);$('g3').setAttribute('aria-pressed',false);run()};
+$('sens').onchange=()=>{shown=null;run()};run();
+// limits
+const cnt={0:0,1:0,2:0,3:0,n:0};DATA.forEach(d=>d.s===null?cnt.n++:cnt[d.s]++);
+$('lims').innerHTML=['<b>Only two chokepoints.</b> '+cnt[3]+' of '+DATA.length+' cells score 3, both in Chips (South Korea memory, Netherlands lithography). Every credible group therefore contains both, and the ranking mostly asks which extra members add other layers.',
+'<b>Data centres are nearly flat.</b> Only Singapore scores 2 (over 1 GW plus a documented overflow role into Indonesia); the other nine score 1. Announced projects such as OpenAI sites in South Korea, India, Australia and Canada are MoUs or reports and are not counted as capacity.','<b>Algorithms is flat.</b> All ten Algorithms cells score 1. No country in this set holds a frontier-model lever that is hard to replace.',
+'<b>Blank and weak cells.</b> '+cnt.n+' cell has no score: South Africa Talent. Nigeria Chips is scored 0 on a single self-reported claim. The baseline counts blank cells as 0; the stability test counts blank and unverified cells as 1.',
+'<b>Secondary sources.</b> '+DATA.filter(d=>d.conf!=='Verified').length+' cells are Single source or Unverified. Some figures were read through page summaries and need a check against the original, including the South Korea memory shares (checked against a headline only) and the Netherlands export rules.',
+'<b>Scores are judgments.</b> They follow written rules, but a different reader could move a cell by one point. The rules are in the companion doc.',
+'<b>Leverage is not willingness.</b> A group that holds the levers still has to agree to use them. The Conditionable flag records whether the lever can be attached to a condition at all.'].map(s=>'<li>'+s+'</li>').join('');
+})().catch(e=>{document.body.insertAdjacentHTML('afterbegin','<p style="padding:16px">Could not load leverage_master_calibrated.csv. Open this page through a web server, not as a file.</p>');console.error(e)});
+</script>
+
+</body>
+</html>
