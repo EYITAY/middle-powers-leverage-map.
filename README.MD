@@ -59,4 +59,4 @@ Singapore data-centre hub-role judgment (capacity itself is settled at 1,068 MW)
 
 ## Sources
 
-Every source is linked in the `Source URL` column of the CSV and in each cell's evidence drawer on the page.
+Every source is linked in the `Source URL` column of the CSV and in each cell's evidence drawer on the page.# middle-powers-leverage-map.
